@@ -441,3 +441,23 @@ class VraRestClient(object):
             LOG.error(tracker['message'])
             raise Exception(tracker['message'])
         LOG.info('vRA Machine Power Off initialized')
+
+    def destroy(self, instance_id):
+        """
+        Destroy vRA instance
+
+        :param instance_id: vRA instance id
+        :return:
+        """
+        url = '{}{}'.format(constants.MACHINES_API, instance_id)
+        r = self._delete(
+            path=url
+        )
+        content = json.loads(r.content)
+        resource_track_id = content['id']
+        tracker = self.__track_status_waiter(resource_track_id,
+                                             RESOURCE_TRACKER_SLEEP)
+        if tracker['status'] == 'FAILED':
+            LOG.error(tracker['message'])
+            raise Exception(tracker['message'])
+        LOG.info('vRA Machine destroy initialized')
