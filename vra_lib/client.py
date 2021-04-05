@@ -75,7 +75,6 @@ class VraClientConfig:
     connection_throttling_timeout_seconds = None
     connection_query_limit = None
     connection_certificate_check = None
-    spoof_guard = None
     cloud_zone = None
     logger = None
 
