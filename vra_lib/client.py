@@ -84,8 +84,6 @@ class VraClient:
     Client for vRealize Automation 8.x
     """
     LOGIN_API = "/csp/gateway/am/api/login"
-    BLUEPRINT_REQUESTS_API = "/blueprint/api/blueprint-requests"
-    BLUEPRINTS_API = "/blueprint/api/blueprints"
 
     def __init__(self, vraClientConfig):
         self._config = c = vraClientConfig
