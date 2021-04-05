@@ -1,11 +1,18 @@
-import eventlet
 import json
+import os
 import requests
 import logging
 from requests.exceptions import HTTPError
 from requests.exceptions import ConnectionError
 from requests.exceptions import ConnectTimeout
 from vra_lib.synchronization import Scheduler
+
+# Eventlet Best Practices
+# https://specs.openstack.org/openstack/openstack-specs/specs/eventlet-best-practices.html
+if not os.environ.get('DISABLE_EVENTLET_PATCHING'):
+    import eventlet
+    eventlet.monkey_patch()
+
 
 LOG = logging.getLogger(__name__)
 
@@ -58,6 +65,7 @@ class VraClientConfig:
     port = None
     username = None
     password = None
+    domain = None 
     organization = None
     connection_retries = None
     connection_retries_seconds = None
@@ -85,12 +93,13 @@ class VraClient:
 
         self.logger = c.logger if c.logger else LOG
         self.api_scheduler = Scheduler(
-            c.connection_throttling_rate,
-            c.connection_throttling_limit_seconds,
-            c.connection_throttling_timeout_seconds)
+            rate=c.connection_throttling_rate,
+            limit=c.connection_throttling_limit_seconds,
+            timeout=c.connection_throttling_timeout_seconds,
+            logger=self.logger)
        
         self.base_url = "https://{}:{}".format(c.host, c.port)
-        self.login = {
+        self.loginDetails = {
             "username": c.username, 
             "password": c.password, 
             "domain": c.domain
@@ -128,9 +137,9 @@ class VraClient:
 
     def login(self):
         self.logger.info("Acquiring vRA token from {} ...".format(self.base_url))
-        r = json.loads(self.post(path=self.LOGIN_API, json=self.login))
+        content = json.loads(self.post(path=self.LOGIN_API, json=self.loginDetails).content)
         self.session.headers.update({
-            'Authorization': 'Bearer {}'.format(r.content.get("cspAuthToken"))
+            'Authorization': 'Bearer {}'.format(content.get("cspAuthToken"))
         })
 
         self.logger.info("vRA token acquired")

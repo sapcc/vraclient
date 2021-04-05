@@ -44,12 +44,6 @@ class Scheduler(object):
 
         self.callback = callback
         self._semaphore = eventlet.semaphore.Semaphore(value=self.rate)
-    
-    def log(self, message):
-        if self._logger:
-            return self.logger
-        else:
-
 
     def __call__(self, func):
         @functools.wraps(func)
