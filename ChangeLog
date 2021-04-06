@@ -1,0 +1,8 @@
+CHANGES
+=======
+
+* Add module initialization
+* Introduce base client
+* Add functionality for delete instance in vRA
+* Add functionality for create/snapshot instance; PowerOn/PowerOff; Deployment, resources and network operations through vRA REST api
+* Initial Commit
