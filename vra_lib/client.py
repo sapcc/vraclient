@@ -6,6 +6,7 @@ from requests.exceptions import HTTPError
 from requests.exceptions import ConnectionError
 from requests.exceptions import ConnectTimeout
 from vra_lib.synchronization import Scheduler
+from vra_exceptions import HttpUnsuccessfulException
 
 # Eventlet Best Practices
 # https://specs.openstack.org/openstack/openstack-specs/specs/eventlet-best-practices.html
